@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <script src="/static/notification.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <title>Shodh - Dashboard</title>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css" />
+  <!-- Google Fonts Roboto -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" />
+  <!-- MDB -->
+  <link rel="stylesheet" href="/static/dashboard_files/css/mdb.min.css" />
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="/static/dashboard_files/css/admin.css" />
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script> 
+  <style>
+
+    .dialog_container {
+      position: fixed;
+      top:0;
+      left:0;
+      height: 100vh;
+      width: 100vw;
+      z-index: 1050;
+      display: none;
+      opacity: 0;
+      transition: opacity 0.7s;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(20px);
+    }
+
+    .dialogue_offset {
+      height: 100%;
+      width:100%;
+      transition: all 0.7s;
+    }
+
+    .dialogue {
+      width: 30%;
+      background: white;
+      box-shadow: 0px 5px 15px grey;
+      z-index: 3;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      padding: 15px;
+      box-sizing: content-box;
+      border-radius: 10px;
+    }
+  </style>
+  </head>
+
+<body>
+  <!--Main Navigation-->
+  <header>
+    <!-- Sidebar -->
+    <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
+      <div class="position-sticky">
+        <div class="list-group list-group-flush mx-3 mt-4">
+          <a onclick="show_card('missing')" href="#" class="list-group-item list-group-item-action py-2 ripple nav_btns" aria-current="true">
+            <i class="fas fa-times fa-fw me-3"></i><span>Report Missing</span>
+          </a>
+          <a onclick="show_card('found')" href="#" class="list-group-item list-group-item-action py-2 ripple nav_btns" >
+            <i class="fas fa-check fa-fw me-3"></i><span>Report Found </span>
+          </a>
+          <a onclick="show_card('history')" href="#" class="list-group-item list-group-item-action py-2 ripple nav_btns" >
+            <i class="fas fa-history fa-fw me-3"></i><span>Report History</span></a>
+        </div>
+      </div>
+    </nav>
+    <!-- Sidebar -->
+
+    <!-- Navbar -->
+    <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+      <!-- Container wrapper -->
+      <div class="container-fluid">
+        <!-- Toggle button -->
+        <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#sidebarMenu"
+          aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+          <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Brand -->
+        <a class="navbar-brand " style="margin-left: 2%;" href="#">
+          <h1>Shodh</h1>
+        </a>
+        <div class="navbar-nav ms-auto d-flex flex-row">
+          User: <span id="uname"> 2131263172361</span>
+        </div>
+      </div>
+      <!-- Container wrapper -->
+    </nav>
+    <!-- Navbar -->
+  </header>
+  <!--Main Navigation-->
+
+  <!--Main layout-->
+  <main style="margin-top: 58px">
+    <div class="container pt-4">
+      <!-- Section: Report Missing -->
+      <section class="mb-4 collapse" id="report_missing">
+        <div class="card">
+          <div class="card-header py-3">
+            <h5 class="mb-0 text-center"><strong>Report Missing</strong></h5>
+          </div>
+          <div class="card-body">
+            <label class="form-label" for="missing_photoFile">Upload facial image of missing person</label>
+            <input type="file" class="form-control" accept="image/*" id="missing_photoFile" />
+            <br/>
+            <div class="form-outline">
+              <input type="text" id="missing_name" class="form-control form-control-lg" />
+              <label class="form-label" for="missing_name">Name of Person</label>
+            </div>
+            <br/>
+            <div class="form-outline">
+              <input type="text" id="missing_contact" class="form-control form-control-lg" />
+              <label class="form-label" for="missing_contact">Contact Number of Family</label>
+            </div>
+            <br/>
+            <div class="form-outline">
+              <textarea type="text" id="missing_address" class="form-control form-control-lg" ></textarea>
+              <label class="form-label" for="missing_address">Residential Address of Person</label>
+            </div>
+            <br/>
+            <div class="text-center">
+              <button onclick="submit_missing_report()" type="button" class="btn btn-primary ">Submit Report</button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Section: Report Missing -->
+
+      <!-- Section: Report Found -->
+      <section class="mb-4 collapse" id="report_found">
+        <div class="card">
+          <div class="card-header py-3">
+            <h5 class="mb-0 text-center"><strong>Report Found</strong></h5>
+          </div>
+          <div class="card-body">
+            <label class="form-label" for="found_photoFile">Upload facial image of person found</label>
+            <input type="file" class="form-control" accept="image/*" id="found_photoFile" />
+            <br/>
+            <div class="form-outline">
+              <input type="text" id="found_name" class="form-control form-control-lg" />
+              <label class="form-label" for="found_name">Name of Person (if known)</label>
+            </div>
+            <br/>
+            <div class="form-outline">
+              <input type="text" id="found_address" class="form-control form-control-lg" />
+              <label class="form-label" for="found_address">Location of Finding</label>
+            </div>
+            <br/>
+            <div class="form-outline">
+              <input type="text" id="found_contact" class="form-control form-control-lg" />
+              <label class="form-label" for="found_contact">Your Contact details</label>
+            </div>
+            <br/>
+            <div class="form-outline">
+              <textarea type="text" id="found_remarks" class="form-control form-control-lg" ></textarea>
+              <label class="form-label" for="found_remarks">Remarks</label>
+            </div>
+            <br/>
+            <div class="text-center">
+              <button type="button" onclick="submit_found_report()" class="btn btn-primary ">Submit Report</button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Section: Report Found -->
+
+      <!-- Section: Report History -->
+      <section class="mb-4 collapse" id="report_history">
+        <div class="dialog_container">
+          <div class="dialogue_offset" onclick="hide_report_details()"> </div>
+          <div class="dialogue">
+            <h3 class="dialogue_title">title</h3>
+            <div class="dialogue_body">
+              body content: value content<br>
+              body content: value content<br>
+              body content: value content<br>
+              body content: value content<br>
+            </div>
+          </div>
+  
+        </div>
+        <div class="card">
+          <div class="card-header text-center py-3">
+            <h5 class="mb-0 text-center">
+              <strong>Reports History</strong>
+            </h5>
+          </div>
+          <div class="card-body" id="report_historty_cnt" style="background-color: aliceblue;">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex justify-content-between p-md-1">
+                  <div class="d-flex flex-row">
+                    <div class="align-self-center" style="width: 25%;">
+                      <img src="https://mdbootstrap.com/img/Photos/Avatars/img%20(32).jpg" class="rounded-circle" style="width: 80%;"/>
+                    </div>
+                    <div class="align-self-center" style="margin-left: 1rem;">
+                      <div>
+                        <h4>Name Of Person</h4>
+                        <p class="mb-0">Missing Report</p>
+                      </div>
+                    </div>
+                  </div>
+    
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Section: Report History -->
+
+    </div>
+  </main>
+  <!--Main layout-->
+  <!-- MDB -->
+  <script type="text/javascript" src="/static/dashboard_files/js/mdb.min.js"></script>
+  <!-- Custom scripts -->
+  <!--script type="text/javascript" src="/static/dashboard_files/js/admin.js"></script-->
+  <script>
+
+
+function submit_found_report() {
+      var photo = $("#found_photoFile")[0].files[0];
+      var name = $("#found_name").val();
+      var address = $("#found_address").val();
+      var remarks = $("#found_remarks").val();
+      var contact = $("#found_contact").val();
+
+      var fd = new FormData();
+      fd.append("photo",photo);
+      fd.append("name",name);
+      fd.append("uname",uname);
+      fd.append("remarks",remarks);
+      fd.append("address",address);
+      fd.append("contact",contact);
+      fd.append("type","found");
+
+      $.ajax({
+        url:"{{url_for('submit_report')}}",
+        type:"post",
+        data:fd,
+        processData:false,
+        contentType:false,
+        success:res=>{
+          if(res == 0) {
+            alert("Failed");
+            return;
+          }
+          $("#found_photoFile").val(null);
+          $("#found_name").val(null);
+          $("#found_remarks").val(null);
+          $("#found_address").val(null);
+          $("#found_contact").val(null);
+
+          alert("Report submitted successfully");
+
+        }
+      })
+    }
+
+    function submit_missing_report() {
+      var photo = $("#missing_photoFile")[0].files[0];
+      var name = $("#missing_name").val();
+      var contact = $("#missing_contact").val();
+      var address = $("#missing_address").val();
+
+      var fd = new FormData();
+      fd.append("photo",photo);
+      fd.append("name",name);
+      fd.append("uname",uname);
+      fd.append("contact",contact);
+      fd.append("address",address);
+      fd.append("type","missing");
+
+      $.ajax({
+        url:"{{url_for('submit_report')}}",
+        type:"post",
+        data:fd,
+        processData:false,
+        contentType:false,
+        success:res=>{
+          if(res == 0) {
+            alert("Failed");
+            return;
+          }
+          $("#missing_photoFile").val(null);
+          $("#missing_name").val(null);
+          $("#missing_contact").val(null);
+          $("#missing_address").val(null);
+
+          alert("Report submitted successfully");
+
+        }
+      })
+    }
+
+    function show_card(card_name) {
+      if(card_name == "missing") {
+        $("#report_found").hide();
+        $("#report_history").hide();
+        $("#report_missing").show();
+        $(".nav_btns").toArray().forEach(elm=>{
+          $(elm).removeClass("active");
+        });
+        $($(".nav_btns")[0]).addClass("active");
+      }
+      else if(card_name == "found") {
+        $("#report_found").show();
+        $("#report_history").hide();
+        $("#report_missing").hide();
+        $(".nav_btns").toArray().forEach(elm=>{
+          $($(elm)).removeClass("active");
+        });
+        $($(".nav_btns")[1]).addClass("active");
+      }
+      else if(card_name == "history") {
+        $("#report_found").hide();
+        $("#report_history").show();
+        $("#report_missing").hide();
+        $(".nav_btns").toArray().forEach(elm=>{
+          $(elm).removeClass("active");
+        });
+        $($(".nav_btns")[2]).addClass("active");
+        document.getElementById("report_historty_cnt").innerHTML = ' ';
+
+        $.post("{{url_for('report_history')}}",
+          {
+            token
+          }).done(data=>{
+            data = JSON.parse(data);
+            console.log(data);
+            var htmls = '';
+            data.forEach(rep=>{
+              htmls += ` 
+              <div class='card' style="margin-top:10px; ${rep.matches.length?"background:green; color:white;":''}" onclick='show_report_details(${JSON.stringify(rep)})'> 
+              <div class="card-body">
+                <div class="d-flex justify-content-between p-md-1">
+                  <div class="d-flex flex-row">
+                    <div class="align-self-center" style="width: 150px; height:150px;">
+                      <img src="/photos/${rep.report_id}" class="rounded-circle" style=" background:white; width: 100%; height:100%; object-fit:contain;"/>
+                    </div>
+                    <div class="align-self-center" style="margin-left: 1rem;">
+                      <div>
+                        <h4>${rep.name?rep.name:'Unknown'}</h4>
+                        <p class="mb-0">${rep.type} Report</p>
+                      </div>
+                    </div>
+                  </div>
+    
+                </div>
+              </div>
+              </div>`;
+            });
+            document.getElementById("report_historty_cnt").innerHTML = htmls;
+          })
+
+      
+      }
+
+    }
+
+    function show_report_details(rep) {
+      if(rep.type=='missing') {
+        $('.dialogue_title').html('Missing Report')
+        var body = `Name: ${rep.name} <br>Contact: ${rep.contact} <br>Address: ${rep.address}`;
+        $('.dialogue_body').html(body);
+      }
+      else {
+        $('.dialogue_title').html('Found Report')
+        var body = `Name: ${rep.name?rep.name:'Unknown'} <br>Remarks: ${rep.remarks} <br>Address: ${rep.address} <br>Contact: ${rep.contact}`;
+        $('.dialogue_body').html(body);
+      }
+      
+      $('.dialog_container').css('display','block')
+      setTimeout(()=>{
+        $('.dialog_container').css('opacity','1')
+      },0)
+
+
+    }
+
+    function hide_report_details() {
+      $('.dialog_container').css('opacity','0')
+      setTimeout(()=>{
+        $('.dialog_container').css('display','none')
+      },1000)
+
+    }
+
+    window.onload = ()=>{
+      window.uname = localStorage.getItem("uname");
+      window.token = localStorage.getItem("token");
+      $("#uname").html(uname);
+
+      registerServiceWorker(
+                "/static/sw.js",
+                "BAkwS7fq1V8WY08bXbk2JmOBREBY7PpGqS_JEDcrddVS610jULxa7L7cgE0MM71qJ76grSFhmqT1-ltEigYv7cs",
+                "/push-subscriptions"
+              );
+          //private key: 3u8HMg-Tzpm_6oUllPhaAeT8WiFtx5jmFaJOuNqdrYE
+      
+      show_card('history');
+
+
+    };
+  </script>
+</body>
+
+</html>

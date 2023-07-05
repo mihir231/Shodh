@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>  <title>SHODH - A Platform for missing Person</title>
+  <title>SHODH - A Platform for missing Person</title>
+  <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='style.css')}}">
+</head>
+<body>
+		
+  <h5>SHODH - A Platform for missing Person</h5>	
+  <div class="header">
+  	<h2>Login</h2>
+  </div>
+	 
+  <form method="post" onsubmit="login(event,this);" class="f1">
+  	<div class="input-group">
+  		<label>Username</label>
+  		<input type="text" name="username" required>
+  	</div>
+  	<div class="input-group">
+  		<label>Password</label>
+  		<input type="password" name="password" required>
+  	</div>
+  	<div class="input-group">
+  		<button type="submit" class="btn" name="login_user">Login</button>
+  	</div>
+  	
+  </form>
+  <script>
+	var api_server = "{{ url_for('login') }}";
+	 function login(event,form) {
+		event.preventDefault();
+		var uname = form.username.value;
+		var passw = form.password.value;
+
+		$.post(api_server,
+			{
+				uname,
+				passw	
+			})
+			.done(
+				data=>{
+					data = JSON.parse(data);
+					console.log(data);
+					if(data.result == "err") {
+						alert(data.msg);
+						return;
+					}
+					localStorage.setItem("uname",uname);
+					localStorage.setItem("token",data.token);
+					window.location.href = "{{url_for('dashboard')}}";
+				}
+			);
+	 }
+  </script>
+</body>
+</html>

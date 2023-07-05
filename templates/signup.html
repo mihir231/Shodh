@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>  <title>SHODH - A Platform for missing Person</title>
+  <link rel="stylesheet" type="text/css" href="/static/style.css">
+</head>
+<body>
+  <div class="header">
+  	<h2>Register</h2>
+  </div>
+	
+  <form method="post" action="#" onsubmit="signup(event,this)">
+ 	<div class="input-group">
+  	  <label>Unit Name</label>
+  	  <input type="text" name="unit_name" value="">
+  	</div>
+	<div class="input-group">
+  	  <label>Unit Address</label>
+  	  <input type="text" name="unit_address" value="">
+  	</div>
+  	<div class="input-group">
+  	  <label>Incharge Personal</label>
+  	  <input type="text" name="incharge_person" value="">
+  	</div>
+  	<div class="input-group">
+  	  <label>Email</label>
+  	  <input type="email" name="email" value="">
+  	</div>
+  	<div class="input-group">
+  	  <label>Password</label>
+  	  <input type="password" name="password_1">
+  	</div>
+  	<div class="input-group">
+  	  <label>Confirm password</label>
+  	  <input type="password" name="password_2">
+  	</div>
+  	<div class="input-group">
+  	  <button type="submit" class="btn" name="reg_user">Register</button>
+  	</div>
+  	 
+  </form>
+
+  <script>
+		var api_server = "{{ url_for('signup') }}";
+		function signup(event,form) {
+			event.preventDefault();
+			var admin_password = window.prompt("Enter admin password");
+			console.log("a",admin_password);
+			var unit_name = form.unit_name.value;
+			var unit_address = form.unit_address.value;
+			var incharge_person = form.incharge_person.value;
+			var email = form.email.value;
+			var passw = form.password_1.value;
+			var passw2 = form.password_2.value;
+
+			if(passw != passw2) {
+				alert("Password did not match");
+				form.password_2.focus();
+				return;
+			}
+
+			$.post(api_server,{
+				unit_name,
+				unit_address,
+				incharge_person,
+				email,
+				passw,
+				admin_password
+			}).done(data=>{
+				data = JSON.parse(data);
+				if(data.result!="success") {
+					alert(data.msg);
+				}
+				else {
+					alert("Account added successfully, kindly login with username: "+data.uname);
+					window.location.href="/";
+				}
+			});
+			
+
+		}
+  </script>
+</body>
+</html>
